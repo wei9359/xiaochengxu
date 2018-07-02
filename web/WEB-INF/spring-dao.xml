@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd ">
+    <context:property-placeholder location="classpath:jdbc.properties" />
+    <!-- bdcp数据源 -->
+    <bean name="mybatis" class = "org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="maxActive" value="30" />
+        <property name="maxIdle" value="5" />
+    </bean>
+
+    <!-- sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 数据库连接池 -->
+        <property name="dataSource" ref="mybatis" />
+        <!-- 加载mybatis的全局配置文件 -->
+        <!--当xml文件和mapper接口不在一个文件夹中时需要配置这个参数-->
+        <!--<property name="mapperLocations" value="classpath:com/jinfu/spring/mapper/*.xml" />-->
+        <property name="configLocation" value="classpath:config/mybatis.xml"/>
+    </bean>
+
+    <!-- mapper扫描器 -->
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+
+        <!-- 扫描包路径，如果需要扫描多个包，中间使用半角逗号隔开 -->
+
+        <property name="basePackage" value="com.yinhu.mapper"></property>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+
+</beans>

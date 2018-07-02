@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yinhu.mapper.HouseMapper">
+    <!--插入数据-->
+    <insert id="insert" parameterType="HouseCustom">
+        <selectKey resultType="String" keyProperty="houseID" order="BEFORE">
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        insert into house(userID,houseID,price,mztype,houseDescribe,houseSize,houseLocal,houseImg,houseLayout,housezx,houselc,housecw,housekf,zffkfs,mffkfs,langitude,latitude,BDType,province,city,county)
+        values(#{userID,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR},#{price,jdbcType=INTEGER},#{mztype,jdbcType=TINYINT},#{houseDescribe,jdbcType=VARCHAR},#{houseSize,jdbcType=INTEGER},#{houseLocal,jdbcType=VARCHAR},#{houseImg,jdbcType=VARCHAR},#{houseLayout,jdbcType=VARCHAR},#{housezx,jdbcType=VARCHAR},#{houselc,jdbcType=VARCHAR},#{housecw,jdbcType=TINYINT},#{housekf,jdbcType=VARCHAR},#{zffkfs,jdbcType=TINYINT},#{mffkfs,jdbcType=TINYINT},#{langitude,jdbcType=INTEGER},#{latitude,jdbcType=INTEGER},#(BDType,jdbcType=TINYINT),#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{county,jdbcType=VARCHAR})
+    </insert>
+    <!--根据条件查询多条数据-->
+    <select id="queryList" resultType="HouseCustom" parameterType="map">
+        select * from house 
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+        <if test="orderBy!=null">
+            order by ${orderBy}
+        </if>
+        <if test="sortBy!=null and orderBy!=null">
+            ${sortBy}
+        </if>
+        <if test="beginRow!=null and pageSize!=null">
+            limit #{beginRow},#{pageSize}
+        </if>
+    </select>
+    <!--根据条件查询一条数据-->
+    <select id="queryOne" resultType="HouseCustom" parameterType="map">
+        select * from house
+        <where>
+            <if test="isFuzzy!=null and isFuzzy ==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <!--根据houseID查询数据-->
+    <select id="queryById" resultType="HouseCustom" parameterType="String">
+        select * from house where houseID=#{houseID}
+    </select>
+    <!--根据条件查询数量-->
+    <select id="count" parameterType="map" resultType="int">
+        select count(0) from house
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy == null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <!--根据ID删除-->
+    <delete id="deleteById" parameterType="map">
+        delete from house where houseID = #{houseID,jdbcType=VARCHAR}
+    </delete>
+    <!--根据condition删除-->
+    <delete id="deleteByCondition" parameterType="map">
+        delete from house
+        <where>
+            <include refid="condition"/>
+        </where>
+    </delete>
+    <!--根据对象更新数据，属性为null则不更新-->
+    <update id="update" parameterType="HouseCustom">
+        update house
+        <set>
+            <if test="userID!=null">
+                userID = #{userID,jdbcType=VARCHAR},
+            </if>
+            <if test="price!=null">
+                price = #{price,jdbcType=INTEGER},
+            </if>
+            <if test="mztype!=null">
+                mztype = #{mztype,jdbcType=TINYINT},
+            </if>
+            <if test="houseDescribe!=null">
+                houseDescribe = #{houseDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="houseSize!= null">
+                houseSize = #{houseSize,jdbcType=INTEGER},
+            </if>
+            <if test="houseLocal!= null">
+                houseLocal = #{houseLocal,jdbcType=VARCHAR},
+            </if>
+            <if test="houseImg!=null">
+                houseImg = #{houseImg,jdbcType=VARCHAR},
+            </if>
+            <if test="houseLayout!=null">
+                houseLayout = #{houseLayout,jdbcType=VARCHAR},
+            </if>
+            <if test="housezx!=null">
+                housezx = #{housezx,jdbcType=VARCHAR},
+            </if>
+            <if test="houselc!=null">
+                houselc = #{houselc,jdbcType=VARCHAR},
+            </if>
+            <if test="housecw!=null">
+                housecw = #{housecw,jdbcType=TINYINT},
+            </if>
+            <if test="housekf!=null">
+                housekf = #{housekf,jdbcType=VARCHAR},
+            </if>
+            <if test="zffkfs!=null">
+                zffkfs = #{zffkfs,jdbcType=TINYINT},
+            </if>
+            <if test="mffkfs!=null">
+                mffkfs = #{mffkfs,jdbcType=TINYINT},
+            </if>
+            <if test="langitude!=null">
+                langitude = #{langitude,jdbcType=INTEGER},
+            </if>
+            <if test="latitude!=null">
+                latitude = #{latitude,jdbcType=INTEGER},
+            </if>
+            <if test="BDType!=null">
+                BDType = #{BDType,jdbcType=TINYINT},
+            </if>
+            <if test="province!=null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city!=null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="county!=null">
+                county = #{county,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where houseID = #{houseID,jdbcType=VARCHAR}
+    </update>
+    <!--根据对象更新数据，属性为null也更新-->
+    <update id="updateNull" parameterType="HouseCustom">
+        update house
+        <set>
+            userID = #{userID,jdbcType=VARCHAR},
+            price = #{price,jdbcType=INTEGER},
+            mztype = #{mztype,jdbcType=TINYINT},
+            houseDescribe = #{houseDescribe,jdbcType=VARCHAR},
+            houseSize = #{houseSize,jdbcType=INTEGER},
+            houseLocal = #{houseLocal,jdbcType=VARCHAR},
+            houseImg = #{houseImg,jdbcType=VARCHAR},
+            houseLayout = #{houseLayout,jdbcType=VARCHAR},
+            housezx = #{housezx,jdbcType=VARCHAR},
+            houselc = #{houselc,jdbcType=VARCHAR},
+            housecw = #{housecw,jdbcType=TINYINT},
+            housekf = #{housekf,jdbcType=VARCHAR},
+            zffkfs = #{zffkfs,jdbcType=TINYINT},
+            mffkfs = #{mffkfs,jdbcType=TINYINT},
+            langitude = #{langitude,jdbcType=INTEGER},
+            latitude = #{latitude,jdbcType=INTEGER},
+            BDType = #{BDType,jdbcType=TINYINT},
+            province = #{province,jdbcType=VARCHAR},
+            city = #{city,jdbcType=VARCHAR},
+            county = #{county,jdbcType=VARCHAR}
+        </set>
+        where houseID=#{houseID,jdbcType=VARCHAR}
+    </update>
+    <!--模糊条件-->
+    <sql id="fuzzyCondition">
+        <if test="houseID!=null">
+            and houseID like CONCAT('%','${houseID}','%')
+        </if>
+        <if test="userID!=null">
+            and userID like CONCAT('%','${userID}','%')
+        </if>
+        <if test="price!=null">
+            and price like CONCAT('%','${price}','%')
+        </if>
+        <if test="mztype!=null">
+            and mztype like CONCAT('%','${mztype}','%')
+        </if>
+        <if test="houseSize!=null">
+            and houseSize like CONCAT('%','${houseSize}','%')
+        </if>
+        <if test="houseLocal!=null">
+            and houseLocal like CONCAT('%','${houseLocal}','%')
+        </if>
+        <if test="houseLayout!=null">
+            and houseLayout like CONCAT('%','${houseLayout}','%')
+        </if>
+        <if test="housezx!=null">
+            and housezx like CONCAT('%','${housezx}','%')
+        </if>
+        <if test="houselc!=null">
+            and houselc like CONCAT('%','${houselc}','%')
+        </if>
+        <if test="housecw!=null">
+            and housecw like CONCAT('%','${housecw}','%')
+        </if>
+        <if test="housekf!=null">
+            and housekf like CONCAT('%','${housekf}','%')
+        </if>
+        <if test="zffkfs!=null">
+            and zffkfs like CONCAT('%','${zffkfs}','%')
+        </if>
+        <if test="mffkfs!=null">
+            and mffkfs like CONCAT('%','${mffkfs}','%')
+        </if>
+        <if test = "province!=null">
+            and province like CONCAT('%','${province}','%')
+        </if>
+        <if test="city!=null">
+            and city like CONCAT('%','${city}','%')
+        </if>
+        <if test="county!=null">
+            and county like CONCAT('%','${county}','%')
+        </if>
+    </sql>
+    <!--精确条件-->
+    <sql id="condition">
+        <if test="houseID!=null">
+            and houseID = #{houseID,jdbcType=VARCHAR}
+        </if>
+        <if test="userID!=null">
+            and userID = #{userID,jdbcType=VARCHAR}
+        </if>
+        <if test="price!=null">
+            and price = #{price,jdbcType=INTEGER}
+        </if>
+        <if test="mztype!=null">
+            and mztype = #{mztype,jdbcType=TINYINT}
+        </if>
+        <if test="houseSize!=null">
+            and houseSize = #{houseSize,jdbcType=INTEGER}
+        </if>
+        <if test="houseLocal!=null">
+            and houseLocal = #{houseLocal,jdbcType=VARCHAR}
+        </if>
+        <if test="houseLayout!=null">
+            and houseLayout = #{houseLayout,jdbcType=VARCHAR}
+        </if>
+        <if test="housezx!=null">
+            and housezx = #{housezx,jdbcType=VARCHAR}
+        </if>
+        <if test="houselc!=null">
+            and houselc = #{houselc,jdbcType=VARCHAR}
+        </if>
+        <if test="housecw!=null">
+            and housecw = #{housecw,jdbcType=TINYINT}
+        </if>
+        <if test="housekf!=null">
+            and housekf = #{housekf,jdbcType=VARCHAR}
+        </if>
+        <if test="zffkfs != null">
+            and zffkfs = #{zffkfs,jdbcType=TINYINT}
+        </if>
+        <if test="mffkfs != null">
+            and mffkfs = #{mffkfs,jdbcType=TINYINT}
+        </if>
+        <if test="BDType!=null">
+            and BDType = #{BDType,jdbcType=TINYINT}
+        </if>
+        <if test="province!=null">
+            and province = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            and city = #{city,jdbcType=VARCHAR}
+        </if>
+        <if test="county!=null">
+            and county = #{county,jdbcType=VARCHAR}
+        </if>
+    </sql>
+</mapper>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yinhu.mapper.UserMapper">
+    <!-- 2018-06-21 auther 魏星-->
+    <!-- 根据对象插入-->
+    <insert id="insert" parameterType="UserCustom">
+        <selectKey resultType="String" keyProperty="userID" order="BEFORE">
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        insert into user (userID,userName,userPassword,userAge,userAddress,userPhoneNum,userType,userImg,openID,unionID,appID)
+        values (#{userID,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR},#{userAge,jdbcType=INTEGER},#{userAddress,jdbcType=VARCHAR},#{userPhoneNum,jdbcType=VARCHAR},#{userType,jdbcType=TINYINT},#{userImg,jdbcType=VARCHAR},#{openID,jdbcType=VARCHAR},#{unionID,jdbcType=VARCHAR},#{appID,jdbcType=VARCHAR})
+    </insert>
+    <!--根据条件查询多条数据-->
+    <select id="queryList" resultType="UserCustom" parameterType="map">
+        select * from user
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="orderBy != null and sortBy != null">
+            ${sortBy}
+        </if>
+        <if test="beginRow!=null and pageSize != null">
+            LIMIT #{beginRow},#{pageSize}
+        </if>
+    </select>
+    <!--根据条件查询一条数据-->
+    <select id="queryOne" resultType="UserCustom" parameterType="map">
+        select * from user
+        <where>
+            <if test="isFuzzy != null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+
+    </select>
+    <!-- 根据条件查询数量-->
+    <select id="count" parameterType="map" resultType="int">
+        select count(1) from user
+        <where>
+            <if test="isFuzzy != null and isFuzzy == 1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy == null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <!--根据userID查询数据-->
+    <select id="queryById" resultType="UserCustom" parameterType="map">
+        select * from user where userID = #{userID,jdbcType=VARCHAR}
+    </select>
+    <!--根据userID删除-->
+    <delete id="deleteById" parameterType="String">
+        delete from user where userID = #{userID,jdbcType=VARCHAR}
+    </delete>
+    <!--根据条件删除-->
+    <delete id="deleteByCondition" parameterType="map">
+        delete from user
+        <where>
+            <include refid="condition"/>
+        </where>
+    </delete>
+    <!--根据对象进行更新，当属性为null时不更新-->
+    <update id="update">
+        update user
+        <set>
+            <if test="userName!=null">
+                userName=#{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userAge!=null">
+                userAge = #{userAge,jdbcType=INTEGER},
+            </if>
+            <if test="userPassword!=null">
+                userPassword = #{userPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="userAddress!=null">
+                userAddress = #{userAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="userPhoneNum!=null">
+                userPhoneNum = #{userPhoneNum,jdbcType=VARCHAR},
+            </if>
+            <if test="userType!=null">
+                userType = #{userType,jdbcType=TINYINT},
+            </if>
+            <if test="userImg!=null">
+                userImg = #{userImg,jdbcType=VARCHAR},
+            </if>
+            <if test="openID!=null">
+                openID = #{openID,jdbcType=VARCHAR},
+            </if>
+            <if test="unionID!=null">
+                unionID = #{unionID,jdbcType=VARCHAR},
+            </if>
+            <if test="appID!=null">
+                appID = #{appID,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where userID = #{userID,jdbcType=VARCHAR}
+    </update>
+    <!--根据对象更新，属性值为null也更新-->
+    <update id="updateNull" parameterType="UserCustom">
+        update user
+        <set>
+            userName = #{userName,jdbcType=VARCHAR},
+            userPassword = #{userPassword,jdbcType=VARCHAR},
+            userAddress = #{userAddress,jdbcType=VARCHAR},
+            userAge = #{userAge,jdbcType=INTEGER},
+            userPhoneNum = #{userPhoneNum,jdbcType=VARCHAR},
+            userType = #{userType,jdbcType=TINYINT},
+            userImg = #{userImg,jdbcType=VARCHAR},
+            openID = #{openID,jdbType=VARCHAR},
+            unionID = #{unionID,jdbcType=VARCHAR},
+            appID = #{appID,jdbcType=VARCHAR}
+        </set>
+        where userID = #{userID,jdbcType=VARCHAR}
+    </update>
+    <!--精确条件-->
+    <sql id="condition">
+        <if test="userID!=null">
+            and userID = #{userID,jdbcType=VARCHAR}
+        </if>
+        <if test="userPassword!=null">
+            and userPassword = #{userPassword,jdbcType=VARCHAR}
+        </if>
+        <if test="userAge!=null">
+            and userAge = #{userAge,jdbcType=INTEGER}
+        </if>
+        <if test="userAddress != null">
+            and userAddress = #{userAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="userName!=null">
+            and userName = #{userName,jdbcType=VARCHAR}
+        </if>
+        <if test = "userPhoneNum != null">
+            and userPhoneNum = #{userPhoneNum,jdbcType=VARCHAR}
+        </if>
+        <if test = "userType!=null">
+            and userType = #{userType,jdbcType=TINYINT}
+        </if>
+        <if test = "openID!=null">
+            and openID = #{openID,jdbcType=VARCHAR}
+        </if>
+        <if test= "unionID!=null">
+            and unionID = #{unionID,jdbcType=VARCHAR}
+        </if>
+        <if test="appID!=null">
+            and appID = #{appID,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    <sql id="fuzzyCondition">
+        <if test="userID">
+            and userID like CONCAT('%','${userID}','%')
+        </if>
+        <if test="userName">
+            and userName like CONCAT('%','${userName}','%')
+        </if>
+        <if test="userPassword">
+            and userPassword like CONCAT('%','${userPassword}','%')
+        </if>
+        <if test="userAge">
+            and userAge like CONCAT('%','${userAge}','%')
+        </if>
+        <if test="userAddress">
+            and userAddress like CONCAT('%','${userAddress','%')
+        </if>
+        <if test="userPhoneNum">
+            and userPhoneNum like CONCAT('%','${userPhoneNum','%')
+        </if>
+        <if test="userType">
+            and userType like CONCAT('%','${userType}','%')
+        </if>
+        <if test="openID">
+            and openID like CONCAT('%','${openID}','%')
+        </if>
+        <if test="unionID">
+            and unionID like CONCAT('%','${unionID}','%')
+        </if>
+        <if test="appID">
+            and appID like CONCAT('%','${appID}','%')
+        </if>
+    </sql>
+</mapper>

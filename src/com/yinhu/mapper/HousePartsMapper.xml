@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yinhu.mapper.HousePartsMapper">
+    <!--根据对象插入数据-->
+    <insert id="insert" parameterType="HousePartsCustom">
+        <selectKey resultType="String" order="BEFORE" keyProperty="housePartsID">
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        insert into houseparts(wifi,bed,armoire,sofa,washing_machine,air_conditioner,desk_chair,tv,central_heating,water_heat,hotplate,smoke_machine,electromagnetic_oven,microwave_oven,toilet,balcony,houseID,housePartsID)
+        values (#{wifi,jdbcType=TINYINT},#{bed,jdbcType=TINYINT},#{armoire,jdbcType=TINYINT},#{sofa,jdbcType=TINYINT},#{washing_machine,jdbcType=TINYINT},#{air_conditioner,jdbcType=TINYINT},#{desk_chair,jdbcType=TINYINT},#{tv,jdbcType=TINYINT},#{central_heating,jdbcType=TINYINT},#{water_heat,jdbcType=TINYINT},#{hotplate,jdbcType=TINYINT},#{smoke_machine,jdbcType=TINYINT},#{electromagnetic_oven,jdbcType=TINYINT},#{microwave_oven,jdbcType=TINYINT},#{toilet,jdbcType=TINYINT},#{balcony,jdbcType=TINYINT},#{houseID,jdbcType=VARCHAR},#{housePartsID,jdbcType=VARCHAR})
+    </insert>
+    <!--根据条件查询多条数据-->
+    <select id="queryList" resultType="HousePartsCustom" parameterType="map">
+        select * from houseParts
+        <where>
+            <if test="isFuzzy!=null and isFuzzy == 1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy == null">
+                <include refid="condition"/>
+            </if>
+            <if test="orderBy!=null">
+                order by ${orderBy}
+            </if>
+            <if test="sortBy != null and orderBy != null">
+                ${sortBy}
+            </if>
+            <if test="beginRow!=null and pageSize != null">
+                limit #{beginRow},#{pageSize}
+            </if>
+        </where>
+    </select>
+    <!--根据条件查询个数-->
+    <select id="count" parameterType="map" resultType="int">
+        select count(0) from houseParts
+        <where>
+            <if test="isFuzzy!=null and isFuzzy == 1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy == null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <!--根据ID进行查询-->
+    <select id="queryById" parameterType="String" resultType="HousePartsCustom">
+        select * from houseparts where housePartsID=#{housePartsID}
+    </select>
+    <!--根据条件查询一条数据-->
+    <select id="queryOne" resultType="HousePartsCustom" parameterType="map">
+        select * from houseparts
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <!--根据ID删除数据-->
+    <delete id="deleteById" parameterType="String">
+        delete from houseparts where housePartsID = #{housePartsID,jdbcType=VARCHAR}
+    </delete>
+    <!--根据条件删除数据-->
+    <delete id="deleteByCondition" parameterType="map">
+        delete from houseparts
+        <where>
+            <if test="isFuzzy!=null and isFuzzy == 1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </delete>
+    <!--根据对象更新数据，属性为null不更新-->
+    <update id="update" parameterType="HousePartsCustom">
+        update houseparts
+        <set>
+            <if test="wifi!=null">
+                wifi = #{wifi,jdbcType=TINYINT},
+            </if>
+            <if test="bed!=null">
+                bed = #{bed,jdbcType=TINYINT},
+            </if>
+            <if test="armoire!=null">
+                armoire = #{armoire,jdbcType = TINYINT},
+            </if>
+            <if test="sofa!=null">
+                sofa = #{sofa,jdbcType=TINYINT},
+            </if>
+            <if test="washing_machine!=null">
+                washing_machine = #{washing_machine,jdbcType=TINYINT},
+            </if>
+            <if test="air_conditioner!=null">
+                air_conditioner = #{air_conditioner,jdbcType=TINYINT},
+            </if>
+            <if test="desk_chair!=null">
+                desk_chair = #{desk_chair,jdbcType=TINYINT},
+            </if>
+            <if test="tv!=null">
+                tv = #{tv,jdbcType=TINYINT},
+            </if>
+            <if test="central_heating!=null">
+                central_heating = #{central_heating,jdbcType=TINYINT},
+            </if>
+            <if test="water_heat!=null">
+                water_heat = #{water_heat,jdbcType=TINYINT},
+            </if>
+            <if test="hotplate!=null">
+                hotplate = #{hotplate,jdbcType=TINYINT},
+            </if>
+            <if test="smoke_machine!=null">
+                smoke_machine = #{smoke_machine,jdbcType=TINYINT},
+            </if>
+            <if test="electromagnetic_oven!=null">
+                electromagnetic_oven = #{electromagnetic_oven,jdbcType=TINYINT},
+            </if>
+            <if test="microwave_oven!=null">
+                microwave_oven = #{microwave_oven,jdbcType=TINYINT},
+            </if>
+            <if test="toilet!=null">
+                toilet = #{toilet,jdbcType=TINYINT},
+            </if>
+            <if test="balcony!=null">
+                balcony = #{balcony,jdbcType=TINYINT},
+            </if>
+            <if test="houseID!=null">
+                houseID = #{houseID,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where housePartsID = #{housePartsID,jdbcType=VARCHAR}
+    </update>
+    <!--根据对象更新数据，属性为null也更新-->
+    <update id="updateNull" parameterType="HousePartsCustom">
+        update houseparts
+        <set>
+            wifi = #{wifi,jdbcType=TINYINT},
+            bed = #{bed,jdbcType=TINYINT},
+            armoire = #{armoire,jdbcType = TINYINT},
+            sofa = #{sofa,jdbcType=TINYINT},
+            washing_machine = #{washing_machine,jdbcType=TINYINT},
+            air_conditioner = #{air_conditioner,jdbcType=TINYINT},
+            desk_chair = #{desk_chair,jdbcType=TINYINT},
+            tv = #{tv,jdbcType=TINYINT},
+            central_heating = #{central_heating,jdbcType=TINYINT},
+            water_heat = #{water_heat,jdbcType=TINYINT},
+            hotplate = #{hotplate,jdbcType=TINYINT},
+            smoke_machine = #{smoke_machine,jdbcType=TINYINT},
+            electromagnetic_oven = #{electromagnetic_oven,jdbcType=TINYINT},
+            microwave_oven = #{microwave_oven,jdbcType=TINYINT},
+            toilet = #{toilet,jdbcType=TINYINT},
+            balcony = #{balcony,jdbcType=TINYINT},
+            houseID = #{houseID,jdbcType=VARCHAR}
+        </set>
+        where housePartsID = #{housePartsID,jdbcType=VARCHAR}
+    </update>
+    <!--精确查询-->
+    <sql id="condition">
+        <if test="wifi!=null">
+            and wifi = #{wifi,jdbcType=TINYINT}
+        </if>
+        <if test="bed!=null">
+            and bed = #{bed,jdbcType=TINYINT}
+        </if>
+        <if test="armoire!=null">
+            and armoire = #{armoire,jdbcType = TINYINT}
+        </if>
+        <if test="sofa!=null">
+            and sofa = #{sofa,jdbcType=TINYINT}
+        </if>
+        <if test="washing_machine!=null">
+            and washing_machine = #{washing_machine,jdbcType=TINYINT}
+        </if>
+        <if test="air_conditioner!=null">
+            and air_conditioner = #{air_conditioner,jdbcType=TINYINT}
+        </if>
+        <if test="desk_chair!=null">
+            and desk_chair = #{desk_chair,jdbcType=TINYINT}
+        </if>
+        <if test="tv!=null">
+            and tv = #{tv,jdbcType=TINYINT}
+        </if>
+        <if test="central_heating!=null">
+            and central_heating = #{central_heating,jdbcType=TINYINT}
+        </if>
+        <if test="water_heat!=null">
+            and water_heat = #{water_heat,jdbcType=TINYINT}
+        </if>
+        <if test="hotplate!=null">
+            and hotplate = #{hotplate,jdbcType=TINYINT}
+        </if>
+        <if test="smoke_machine!=null">
+            and smoke_machine = #{smoke_machine,jdbcType=TINYINT}
+        </if>
+        <if test="electromagnetic_oven!=null">
+            and electromagnetic_oven = #{electromagnetic_oven,jdbcType=TINYINT}
+        </if>
+        <if test="microwave_oven!=null">
+            and microwave_oven = #{microwave_oven,jdbcType=TINYINT}
+        </if>
+        <if test="toilet!=null">
+            and toilet = #{toilet,jdbcType=TINYINT}
+        </if>
+        <if test="balcony!=null">
+            and balcony = #{balcony,jdbcType=TINYINT}
+        </if>
+        <if test="houseID!=null">
+            and houseID = #{houseID,jdbcType=VARCHAR}
+        </if>
+        <if test="housePartsID!=null">
+            and housePartsID = #{housePartsID,jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <sql id="fuzzyCondition">
+        <if test="wifi!=null">
+            and wifi like CONCAT('%','${wifi}','%')
+        </if>
+        <if test="bed!=null">
+            and bed like CONCAT('%','${bed}','%')
+        </if>
+        <if test="armoire!=null">
+            and armoire like CONCAT('%','${armoire}','%')
+        </if>
+        <if test="sofa!=null">
+            and sofa like CONCAT('%','${sofa}','%')
+        </if>
+        <if test="washing_machine!=null">
+            and washing_machine like CONCAT('%','${washing_machine}','%')
+        </if>
+        <if test="air_conditioner!=null">
+            and air_conditioner like CONCAT('%','${air_conditioner}','%')
+        </if>
+        <if test="desk_chair!=null">
+            and desk_chair like CONCAT('%','${desk_chair}','%')
+        </if>
+        <if test="tv!=null">
+            and tv like CONCAT('%','${tv}','%')
+        </if>
+        <if test="central_heating!=null">
+            and central_heating like CONCAT('%','${central_heating}','%')
+        </if>
+        <if test="water_heat!=null">
+            and water_heat like CONCAT('%','${water_heat}','%')
+        </if>
+        <if test="hotplate!=null">
+            and hotplate like CONCAT('%','${hotplate}','%')
+        </if>
+        <if test="smoke_machine!=null">
+            and smoke_machine like CONCAT('%','${smoke_machine}','%')
+        </if>
+        <if test="electromagnetic_oven!=null">
+            and electromagnetic_oven like CONCAT('%','${electromagnetic_oven}','%')
+        </if>
+        <if test="microwave_oven!=null">
+            and microwave_oven like CONCAT('%','${microwave_oven}','%')
+        </if>
+        <if test="toilet!=null">
+            and toilet like CONCAT('%','${toilet}','%')
+        </if>
+        <if test="balcony!=null">
+            and balcony like CONCAT('%','${balcony}','%')
+        </if>
+        <if test="houseID!=null">
+            and houseID like CONCAT('%','${houseID}','%')
+        </if>
+        <if test="housePartsID!=null">
+            and housePartsID like CONCAT('%','${housePartsID}','%')
+        </if>
+    </sql>
+</mapper>

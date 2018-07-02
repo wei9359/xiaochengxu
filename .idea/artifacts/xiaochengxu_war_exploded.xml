@@ -1,0 +1,36 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="xiaochengxu:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/xiaochengxu_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="xiaochengxu/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="xiaochengxu" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Spring-4.3.18.RELEASE" />
+          <element id="library" level="project" name="Spring MVC-4.3.18.RELEASE" />
+          <element id="file-copy" path="D:/apache-tomcat-7.0.88-windows-x64/apache-tomcat-7.0.88/lib/servlet-api.jar" />
+          <element id="file-copy" path="D:/apache-tomcat-7.0.88-windows-x64/apache-tomcat-7.0.88/lib/jsp-api.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/jstl-1.2.jar" />
+          <element id="dir-copy" path="$PROJECT_DIR$" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/commons-dbcp-1.2.2.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/commons-pool-1.3.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/mybatis-3.2.7.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/mybatis-ehcache-1.0.2.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/mybatis-spring-1.2.2.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/mysql-connector-java-5.1.7-bin.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/jackson-core-asl-1.9.11.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/jackson-mapper-asl-1.9.11.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/fastjson-1.2.9.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/log4j-1.2.17.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/log4j-api-2.0-rc1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/log4j-core-2.0-rc1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/dom4j-1.6.1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/qiniu-java-sdk-7.2.14.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/gson-2.1.jar" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

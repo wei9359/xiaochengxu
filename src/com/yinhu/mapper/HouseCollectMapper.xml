@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yinhu.mapper.HouseCollectMapper">
+    <insert id="insert" parameterType="HouseCollectCustom">
+        <selectKey resultType="String" order="BEFORE" keyProperty="houseCollectID">
+            select replace(uuid(),"-","") from dual
+        </selectKey>
+        insert housecollect(houseCollectID,houseID,userID,attribute1,attribute2,attribute3)
+        values(#{houseCollectID,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR},#{userID,jdbcType=VARCHAR},#{attribute1,jdbcType=VARCHAR},#{attribute2,jdbcType=VARCHAR},#{attribute3,jdbcType=VARCHAR})
+    </insert>
+    <select id="queryList" parameterType="map" resultType="HouseCollectCustom">
+        select * from housecollect
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+            <if test="orderBy!=null">
+                order by ${orderBy}
+            </if>
+            <if test="orderBy!=null and sortBy!=null">
+                ${sortBy}
+            </if>
+            <if test="beginRow!=null and pageSize!=null">
+                limit #{beginRow},#{pageSize}
+            </if>
+        </where>
+    </select>
+    <select id="count" resultType="int" parameterType="map">
+        select count(0) from housecollect
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <select id="queryOne" parameterType="map" resultType="HouseCollectCustom">
+        select * from housecollect
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <select id="queryById" resultType="HouseCollectCustom" parameterType="String">
+        select * from housecollect where houseCollectID=#{houseCollectID,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteById" parameterType="String">
+        delete from housecollect where houseCollectID=#{houseCollectID,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByCondition" parameterType="map">
+        delete from housecollect
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </delete>
+    <update id="updata" parameterType="HouseCollectCustom">
+        update housecollect
+        <set>
+            <if test="houseID!=null">
+                houseID = #{houseID,jdbcType=VARCHAR},
+            </if>
+            <if test="userID!=null">
+                userID = #{userID,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute1!=null">
+                attribute1 = #{attribute1,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute2!=null">
+                attribute2 = #{attribute2,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute3!=null">
+                attribute3 = #{attribute3,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where houseCollectID=#{houseCollectID,jdbcType=VARCHAR}
+    </update>
+    <update id="updataNull" parameterType="HouseCollectCustom">
+        update housecollect
+        <set>
+            houseID = #{houseID,jdbcType=VARCHAR},
+            userID = #{userID,jdbcType=VARCHAR},
+            attribute1 = #{attribute1,jdbcType=VARCHAR},
+            attribute2 = #{attribute2,jdbcType=VARCHAR},
+            attribute3 = #{attribute3,jdbcType=VARCHAR},
+        </set>
+        where houseCollectID=#{houseCollectID,jdbcType=VARCHAR}
+    </update>
+    <sql id="condition">
+        <if test="houseCollectID!=null">
+            and houseCollectID = #{houseCollectID,jdbcType=VARCHAR}
+        </if>
+        <if test="houseID!=null">
+            and houseID = #{houseID,jdbcType=VARCHAR}
+        </if>
+        <if test="userID!=null">
+            and userID = #{userID,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute1!=null">
+            and attribute1 = #{attribute1,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute2!=null">
+            and attribute2 = #{attribute2,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute3!=null">
+            and attribute3 = #{attribute3,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    <sql id="fuzzyCondition">
+        <if test="houseCollectID!=null">
+            and houseCollectID like CONCAT('%','${houseCollectID}','%')
+        </if>
+        <if test="houseID!=null">
+            and houseID like CONCAT('%','${houseID}','%')
+        </if>
+        <if test="userID!=null">
+            and userID like CONCAT('%','${userID}','%')
+        </if>
+        <if test="attribute1!=null">
+            and attribute1 like CONCAT('%','${attribute1}','%')
+        </if>
+        <if test="attribute2!=null">
+            and attribute2 like CONCAT('%','${attribute2}','%')
+        </if>
+        <if test="attribute3!=null">
+            and attribute3 like CONCAT('%','${attribute3}','%')
+        </if>
+    </sql>
+</mapper>

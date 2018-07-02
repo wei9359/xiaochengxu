@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yinhu.mapper.HouseImgMapper">
+    <!--插入数据-->
+    <insert id="insert" keyProperty="HouseImgCustom">
+        <selectKey keyProperty="houseImgID" order="BEFORE" resultType="String">
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        insert into houseImg(houseImgID,houseImgUrl,houseImgDescribe,houseID)
+        values(#{houseImgID,jdbcType=VARCHAR},#{houseImgUrl,jdbcType=VARCHAR},#{houseImgDescribe,jdbcType=VARCHAR},${houseID,jdbcType=VARCHAR})
+    </insert>
+    <!--通过条件查询多条数据-->
+    <select id="queryList" parameterType="map" resultType="HouseImgCustom">
+        select * from houseImg
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <!--通过条件查询个数-->
+    <select id="count" parameterType="map" resultType="int">
+        select * from houseImg
+        <where>
+            <if test="isFuzzy!=null and isFuzzy==1">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <!--通过条件查询一条数据-->
+    <select id="queryOne" parameterType="map" resultType="HouseImgCustom">
+        select * from houseImg
+        <where>
+            <if test="isFuzzy!=null">
+                <include refid="fuzzyCondition"/>
+            </if>
+            <if test="isFuzzy==null">
+                <include refid="condition"/>
+            </if>
+        </where>
+    </select>
+    <!--根据ID查询-->
+    <select id="queryById" resultType="HouseImgCustom" parameterType="map">
+        select * from houseImg where houseImgId = #{houseImgId,jdbcType=VARCHAR}
+    </select>
+    <!--根据ID删除-->
+    <delete id="deleteById" parameterType="String">
+        delete from houseImg where houseImgId = #{houseImgId,jdbcType=VARCHAR}
+    </delete>
+    <!--根据条件删除-->
+    <delete id="deleteByCondition" parameterType="map">
+        delete from houseImg
+        <include refid="condition"/>
+    </delete>
+    <!--根据对象进行更新,属性为null就不更新-->
+    <update id="update" parameterType="HouseImgCustom">
+        update houseImg
+        <set>
+            <if test="houseImgUrl!=null">
+                houseImgUrl = #{houseImgUrl,jdbcType=VARCAHR},
+            </if>
+            <if test="houseImgDescribe!=null">
+                houseImgDescribe = #{houseImgDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="houseID!=null">
+                houseID = #{houseID,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        where houseImgID = #{houseImgID,jdbcType=VARCHAR}
+    </update>
+    <update id="updateNull" parameterType="HouseImgCustom">
+        update houseImg
+        <set>
+            houseImgUrl = #{houseImgUrl,jdbcType=VARCAHR},
+            houseImgDescribe = #{houseImgDescribe,jdbcType=VARCHAR},
+            houseID = #{houseID,jdbcType=VARCHAR}
+        </set>
+        where houseImgID = #{houseImgID,jdbcType=VARCHAR}
+    </update>
+    <!--精确查询条件-->
+    <sql id="condition">
+        <if test="houseImgID != null">
+            and houseImgID = #{houseImgID,jdbcType=VARCHAR}
+        </if>
+        <if test="houseID!=null">
+            and houseID = #{houseID,jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <!--模糊条件查询-->
+    <sql id="fuzzyCondition">
+        <if test="houseImgID!=null">
+            and houseImgID like CONCAT('%','${houseImgID}','%')
+        </if>
+        <if test="houseID!=null">
+            and houseID like CONCAT('%','${houseID}','%')
+        </if>
+    </sql>
+</mapper>
