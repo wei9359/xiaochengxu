@@ -1,6 +1,6 @@
 package com.yinhu.serviceimp;
 
-import com.yinhu.controller.com.yinhu.tools.Pager;
+import com.yinhu.tools.Pager;
 import com.yinhu.mapper.BaseMapper;
 import com.yinhu.service.BaseService;
 

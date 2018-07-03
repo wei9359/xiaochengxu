@@ -1,6 +1,6 @@
 package com.yinhu.service;
 
-import com.yinhu.controller.com.yinhu.tools.Pager;
+import com.yinhu.tools.Pager;
 
 import java.util.List;
 import java.util.Map;
