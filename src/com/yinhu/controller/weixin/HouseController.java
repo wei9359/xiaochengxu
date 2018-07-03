@@ -1,5 +1,6 @@
 package com.yinhu.controller.weixin;
 
+import com.yinhu.pojo.HouseParts;
 import com.yinhu.tools.Message;
 import com.yinhu.pojo.custom.*;
 import com.yinhu.service.*;
@@ -9,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -196,9 +194,9 @@ public class HouseController {
     * @return Message
     */
     @RequestMapping(value = "addHouse")
-    public @ResponseBody Message addHouse(String userID, int price, int mztype, String houseDescribe, int houseSize, String houseLocal,String[] houseImgs,String houseLayout,String housezx,String houselc,int housecw,String housekf,int zffkfs,int mffkfs,int langitude,int latitude,int BDType,String province,String city,String county){
+    public @ResponseBody Message addHouse(String userID,List<Map<String,String>> houseParts, int price, int mztype, String houseDescribe, int houseSize, String houseLocal,String[] houseImgs,String houseLayout,String housezx,String houselc,int housecw,String housekf,int zffkfs,int mffkfs,int langitude,int latitude,int BDType,String province,String city,String county){
         logger.info("添加房屋信息");
-        if(!StringUtil.isEmpty(userID) && !StringUtil.isEmpty(houseDescribe) && !StringUtil.isEmpty(houseLocal) && houseImgs.length==0 && !StringUtil.isEmpty(houseLayout) && !StringUtil.isEmpty(housezx) && !StringUtil.isEmpty(houselc) && !StringUtil.isEmpty(housekf) && !StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county)){
+        if(!StringUtil.isEmpty(userID) && !StringUtil.isEmpty(houseDescribe) && !StringUtil.isEmpty(houseLocal) && houseImgs.length==0 && !StringUtil.isEmpty(houseLayout) && !StringUtil.isEmpty(housezx) && !StringUtil.isEmpty(houselc) && !StringUtil.isEmpty(housekf) && !StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county) && houseParts!=null){
             try {
                 //插入房屋信息
                 HouseCustom houseCustom = new HouseCustom();
@@ -222,7 +220,7 @@ public class HouseController {
                 houseCustom.setProvince(province);
                 houseCustom.setCity(city);
                 houseCustom.setCounty(county);
-                houseService.insert(houseCustom);
+                //houseService.insert(houseCustom);
 
                 //插入房屋照片
                 Map<Object,Object> condition = new HashMap<Object, Object>();
@@ -232,7 +230,16 @@ public class HouseController {
                     HouseImgCustom houseImgCustom = new HouseImgCustom();
                     houseImgCustom.setHouseImgUrl(image);
                     houseImgCustom.setHouseID(houseCustom1.getHouseID());
-                    houseImgService.insert(houseImgCustom);
+                    //houseImgService.insert(houseImgCustom);
+                }
+
+                for(int i = 0;i<houseParts.size();i++){
+                    HousePartsCustom housePartsCustom = new HousePartsCustom();
+                   if(houseParts.get(i).get("name").equals("WIFI")) {
+                        if(houseParts.get(i).get("checked") == "true"){
+                            housePartsCustom.setWifi(1);
+                        }
+                   }
                 }
                 return new Message("1","成功");
 
