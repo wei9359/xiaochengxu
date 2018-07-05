@@ -6,8 +6,8 @@
         <selectKey resultType="String" keyProperty="houseID" order="BEFORE">
             select replace(uuid(),'-','') from dual
         </selectKey>
-        insert into house(userID,houseID,price,mztype,houseDescribe,houseSize,houseLocal,houseImg,houseLayout,housezx,houselc,housecw,housekf,zffkfs,mffkfs,langitude,latitude,BDType,province,city,county)
-        values(#{userID,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR},#{price,jdbcType=INTEGER},#{mztype,jdbcType=TINYINT},#{houseDescribe,jdbcType=VARCHAR},#{houseSize,jdbcType=INTEGER},#{houseLocal,jdbcType=VARCHAR},#{houseImg,jdbcType=VARCHAR},#{houseLayout,jdbcType=VARCHAR},#{housezx,jdbcType=VARCHAR},#{houselc,jdbcType=VARCHAR},#{housecw,jdbcType=TINYINT},#{housekf,jdbcType=VARCHAR},#{zffkfs,jdbcType=TINYINT},#{mffkfs,jdbcType=TINYINT},#{langitude,jdbcType=INTEGER},#{latitude,jdbcType=INTEGER},#(BDType,jdbcType=TINYINT),#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{county,jdbcType=VARCHAR})
+        insert into house(userID,houseID,price,mztype,houseDescribe,houseSize,houseLocal,houseImg,houseLayout,housezx,houselc,housecw,housekf,zffkfs,mffkfs,longitude,latitude,BDType,province,city,county)
+        values(#{userID,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR},#{price,jdbcType=INTEGER},#{mztype,jdbcType=TINYINT},#{houseDescribe,jdbcType=VARCHAR},#{houseSize,jdbcType=INTEGER},#{houseLocal,jdbcType=VARCHAR},#{houseImg,jdbcType=VARCHAR},#{houseLayout,jdbcType=VARCHAR},#{housezx,jdbcType=VARCHAR},#{houselc,jdbcType=VARCHAR},#{housecw,jdbcType=TINYINT},#{housekf,jdbcType=VARCHAR},#{zffkfs,jdbcType=TINYINT},#{mffkfs,jdbcType=TINYINT},#{longitude,jdbcType=DOUBLE},#{latitude,jdbcType=DOUBLE},#(BDType,jdbcType=TINYINT),#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{county,jdbcType=VARCHAR})
     </insert>
     <!--根据条件查询多条数据-->
     <select id="queryList" resultType="HouseCustom" parameterType="map">
@@ -115,11 +115,11 @@
             <if test="mffkfs!=null">
                 mffkfs = #{mffkfs,jdbcType=TINYINT},
             </if>
-            <if test="langitude!=null">
-                langitude = #{langitude,jdbcType=INTEGER},
+            <if test="longitude!=null">
+                longitude = #{longitude,jdbcType=DOUBLE},
             </if>
             <if test="latitude!=null">
-                latitude = #{latitude,jdbcType=INTEGER},
+                latitude = #{latitude,jdbcType=DOUBLE},
             </if>
             <if test="BDType!=null">
                 BDType = #{BDType,jdbcType=TINYINT},
@@ -154,7 +154,7 @@
             housekf = #{housekf,jdbcType=VARCHAR},
             zffkfs = #{zffkfs,jdbcType=TINYINT},
             mffkfs = #{mffkfs,jdbcType=TINYINT},
-            langitude = #{langitude,jdbcType=INTEGER},
+            longitude = #{longitude,jdbcType=INTEGER},
             latitude = #{latitude,jdbcType=INTEGER},
             BDType = #{BDType,jdbcType=TINYINT},
             province = #{province,jdbcType=VARCHAR},

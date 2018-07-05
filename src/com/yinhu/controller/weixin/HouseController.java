@@ -194,7 +194,7 @@ public class HouseController {
     * @return Message
     */
     @RequestMapping(value = "addHouse")
-    public @ResponseBody Message addHouse(String userID,Object houseParts, int price, int mztype, String houseDescribe, int houseSize, String houseLocal,String[] houseImgs,String houseLayout,String housezx,String houselc,int housecw,String housekf,int zffkfs,int mffkfs,int langitude,int latitude,int BDType,String province,String city,String county){
+    public @ResponseBody Message addHouse(String userID,Object houseParts, int price, int mztype, String houseDescribe, int houseSize, String houseLocal,String[] houseImgs,String houseLayout,String housezx,String houselc,int housecw,String housekf,int zffkfs,int mffkfs,double longitude,double latitude,int BDType,String province,String city,String county){
         logger.info("添加房屋信息");
         if(!StringUtil.isEmpty(userID) && !StringUtil.isEmpty(houseDescribe) && !StringUtil.isEmpty(houseLocal) && houseImgs.length==0 && !StringUtil.isEmpty(houseLayout) && !StringUtil.isEmpty(housezx) && !StringUtil.isEmpty(houselc) && !StringUtil.isEmpty(housekf) && !StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county) && houseParts!=null){
             try {
@@ -214,7 +214,7 @@ public class HouseController {
                 houseCustom.setHousekf(housekf);
                 houseCustom.setZffkfs(zffkfs);
                 houseCustom.setMffkfs(mffkfs);
-                houseCustom.setLangitude(langitude);
+                houseCustom.setLongitude(longitude);
                 houseCustom.setLatitude(latitude);
                 houseCustom.setBDType(BDType);
                 houseCustom.setProvince(province);

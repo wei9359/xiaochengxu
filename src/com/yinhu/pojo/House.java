@@ -21,8 +21,8 @@ public class House {
     private String housekf;
     private int zffkfs;
     private int mffkfs;
-    private int langitude;
-    private int latitude;
+    private double longitude;
+    private double latitude;
     private int BDType;
     private String province ;
     private String city;
@@ -60,19 +60,19 @@ public class House {
         this.BDType = BDType;
     }
 
-    public int getLangitude() {
-        return langitude;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLangitude(int langitude) {
-        this.langitude = langitude;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public int getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(int latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
