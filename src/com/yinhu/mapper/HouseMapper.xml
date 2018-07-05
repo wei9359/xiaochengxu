@@ -213,6 +213,9 @@
         <if test="county!=null">
             and county like CONCAT('%','${county}','%')
         </if>
+        <if test="houseImg!=null">
+            and houseImg like CONCAT('%','${houseImg}','%')
+        </if>
     </sql>
     <!--精确条件-->
     <sql id="condition">
@@ -266,6 +269,9 @@
         </if>
         <if test="county!=null">
             and county = #{county,jdbcType=VARCHAR}
+        </if>
+        <if test="houseImg!=null">
+            and houseImg = #{houseImg,jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>
