@@ -23,6 +23,15 @@ public class HouseParts {
     private int toilet;
     private int balcony;
     private String houseID;
+    private String housePartsID;
+
+    public String getHousePartsID() {
+        return housePartsID;
+    }
+
+    public void setHousePartsID(String housePartsID) {
+        this.housePartsID = housePartsID;
+    }
 
     public int getWifi() {
         return wifi;

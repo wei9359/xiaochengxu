@@ -225,18 +225,95 @@ public class HouseController {
                 houseCustom.setProvince(province);
                 houseCustom.setCity(city);
                 houseCustom.setCounty(county);
-                //houseService.insert(houseCustom);
-                System.out.println("hhhhh"+JSONTools.stringToListMap(houseParts).get(0).get("name"));
-                //插入房屋照片
+                houseService.insert(houseCustom);
+                //插入房屋家具
+                List<Map<String,String>> housePartsListMap = JSONTools.stringToListMap(houseParts);
+                HousePartsCustom housePartsCustom = new HousePartsCustom();
                 Map<Object,Object> condition = new HashMap<Object, Object>();
                 condition.put("houseImg",houseCustom.getHouseImg());
                 HouseCustom houseCustom1 = houseService.queryOne(condition);
+                if(houseCustom1!=null) {
+                    for (int i = 0; i < housePartsListMap.size(); i++) {
+                        if (housePartsListMap.get(i).get("value").equals("1")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setWifi(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("2")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setBed(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("3")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setArmoire(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("4")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setSofa(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("5")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setWashing_machine(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("6")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setAir_conditioner(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("7")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setDesk_chair(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("8")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setTv(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("9")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setCentral_heating(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("10")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setWater_heat(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("11")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setSmoke_machine(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("12")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setElectromagnetic_oven(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("13")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setMicrowave_oven(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("14")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setToilet(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("15")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setHotplate(1);
+                            }
+                        } else if (housePartsListMap.get(i).get("value").equals("16")) {
+                            if (housePartsListMap.get(i).get("checked").equals("true")) {
+                                housePartsCustom.setBalcony(1);
+                            }
+                        }
+
+                    }
+                    housePartsCustom.setHouseID(houseCustom1.getHouseID());
+                }else{
+                    logger.info("插入失败");
+                    return new Message("0","插入失败");
+                }
+                housePartsService.insert(housePartsCustom);
+                //插入房屋照片
                 if(houseCustom1!=null) {
                     for (String image : houseImgs) {
                         HouseImgCustom houseImgCustom = new HouseImgCustom();
                         houseImgCustom.setHouseImgUrl(image);
                         houseImgCustom.setHouseID(houseCustom1.getHouseID());
-                        //houseImgService.insert(houseImgCustom);
+                        houseImgService.insert(houseImgCustom);
                     }
                 }else{
                     return new Message("0","插入错误");
