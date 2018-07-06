@@ -1,6 +1,10 @@
 package com.yinhu.controller.weixin;
 
+import com.alibaba.fastjson.JSONArray;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.yinhu.pojo.HouseParts;
+import com.yinhu.tools.JSONTools;
 import com.yinhu.tools.Message;
 import com.yinhu.pojo.custom.*;
 import com.yinhu.service.*;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -194,7 +199,7 @@ public class HouseController {
     * @return Message
     */
     @RequestMapping(value = "addHouse")
-    public @ResponseBody Message addHouse(String userID,Object houseParts, int price, int mztype, String houseDescribe, int houseSize, String houseLocal,String[] houseImgs,String houseLayout,String housezx,String houselc,int housecw,String housekf,int zffkfs,int mffkfs,double longitude,double latitude,int BDType,String province,String city,String county){
+    public @ResponseBody Message addHouse(String userID, String houseParts, int price, int mztype, String houseDescribe, int houseSize, String houseLocal, String[] houseImgs, String houseLayout, String housezx, String houselc, int housecw, String housekf, int zffkfs, int mffkfs, double longitude, double latitude, int BDType, String province, String city, String county){
         logger.info("添加房屋信息");
         if(!StringUtil.isEmpty(userID) && !StringUtil.isEmpty(houseDescribe) && !StringUtil.isEmpty(houseLocal) && houseImgs.length!=0 && !StringUtil.isEmpty(houseLayout) && !StringUtil.isEmpty(housezx) && !StringUtil.isEmpty(houselc) && !StringUtil.isEmpty(housekf) && !StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county)){
             try {
@@ -221,7 +226,7 @@ public class HouseController {
                 houseCustom.setCity(city);
                 houseCustom.setCounty(county);
                 //houseService.insert(houseCustom);
-
+                System.out.println("hhhhh"+JSONTools.stringToListMap(houseParts).get(0).get("name"));
                 //插入房屋照片
                 Map<Object,Object> condition = new HashMap<Object, Object>();
                 condition.put("houseImg",houseCustom.getHouseImg());
@@ -236,15 +241,8 @@ public class HouseController {
                 }else{
                     return new Message("0","插入错误");
                 }
-                System.out.println("houseParts:"+houseParts);
-//                for(int i = 0;i<houseParts.size();i++){
-//                    HousePartsCustom housePartsCustom = new HousePartsCustom();
-//                   if(houseParts.get(i).get("name").equals("WIFI")) {
-//                        if(houseParts.get(i).get("checked") == "true"){
-//                            housePartsCustom.setWifi(1);
-//                        }
-//                   }
-//                }
+
+
                 return new Message("1","成功");
 
             }catch (Exception e){
