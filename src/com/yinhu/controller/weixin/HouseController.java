@@ -64,7 +64,7 @@ public class HouseController {
                 List<HouseImgCustom> houseImgCustomList = houseImgService.queryList(condition);
                 HousePartsCustom housePartsCustom = housePartsService.queryOne(condition);
                 if(houseImgCustomList!=null){
-                    houseCustom.setHouseImgListCustom(houseImgCustomList);
+                    houseCustom.setHouseImgCustomList(houseImgCustomList);
                 }
                 if(housePartsCustom!=null) {
                     houseCustom.setHousePartsCustom(housePartsCustom);
@@ -75,6 +75,11 @@ public class HouseController {
                     houseCustom.setCollectType(1);
                 }else{
                     houseCustom.setCollectType(0);
+                }
+                UserCustom userCustom = userService.queryById(userID);
+                if(userCustom!=null){
+                    houseCustom.setOwnerName(userCustom.getUserName());
+                    houseCustom.setOwnerPhone(userCustom.getUserPhoneNum());
                 }
                 return new Message("1","访问成功",houseCustom);
             }
@@ -88,9 +93,9 @@ public class HouseController {
      *   * @param openID
      * @return Message
      */
-    //通过openID获取
-    @RequestMapping(value = "getHouseIfoByUserID")
-    public @ResponseBody Message getHouseIfoByUserID(String userID){
+    //获取收藏
+    @RequestMapping(value = "getCollection")
+    public @ResponseBody Message getCollection(String userID){
         if(userID!=null){
             try {
                 Map<Object,Object> map = new HashMap<Object, Object>();
@@ -128,6 +133,62 @@ public class HouseController {
             return new Message("1","访问成功",houseCustomList);
         }else {
             return new Message("0", "获取失败");
+        }
+    }
+    /**
+    * @gongneng  通过首页的参数查询房屋信息
+    * @auther 魏星
+    * @date   2018/7/9    20:54
+    * @param  mztype 房屋类型 0:整租,1:合租,2:售房
+    houseLayout     房屋格局 一室一 厅
+    housekf         看房要求
+    housezx         房屋装修
+    * @return com.yinhu.tools.Message
+    */
+    @RequestMapping(value = "getHouseIfoByCondition")
+    public @ResponseBody Message getHouseIfoByCondition(Integer mztype,String houseLayout,String housekf,String housezx){
+        try {
+            Map<Object, Object> condition = new HashMap<Object, Object>();
+            if (mztype != null) {
+                condition.put("mztype", mztype);
+            }
+            System.out.println(!StringUtil.isEmpty(houseLayout));
+            if (!StringUtil.isEmpty(houseLayout)) {
+                condition.put("houseLayout", houseLayout);
+            }
+            if (!StringUtil.isEmpty(housekf)) {
+                condition.put("housekf", housekf);
+            }
+            if (!StringUtil.isEmpty(housezx)) {
+                condition.put("housezx", housezx);
+            }
+           List<HouseCustom> houseCustomList = houseService.queryList(condition);
+            if(houseCustomList!=null && houseCustomList.size()!=0){
+                return new Message("1","成功",houseCustomList);
+            }else{
+                return new Message("0","没有符合的房屋");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.info("房屋信息查询-服务器错误");
+            return new Message("0","房屋信息查询-服务器错误");
+        }
+
+    }
+    /**
+    * @gongneng   获取给定位置三公里内的所有房源
+    * @auther 魏星
+    * @date   2018/7/10    16:28
+    * @param  longitude   精度
+    latitude   维度
+    * @return com.yinhu.tools.Message
+    */
+    @RequestMapping(value = "getHouseListInArea")
+    public @ResponseBody Message getHouseListInArea(Double longitude,Double latitude){
+        if(longitude!=null&&latitude!=null){
+            return new Message("1","成功");
+        }else{
+            return new Message("0","参数错误");
         }
     }
     /**
@@ -199,10 +260,11 @@ public class HouseController {
     * @return Message
     */
     @RequestMapping(value = "addHouse")
-    public @ResponseBody Message addHouse(String userID, String houseParts, int price, int mztype, String houseDescribe, int houseSize, String houseLocal, String[] houseImgs, String houseLayout, String housezx, String houselc, int housecw, String housekf, int zffkfs, int mffkfs, double longitude, double latitude, int BDType, String province, String city, String county){
+    public @ResponseBody Message addHouse(String userID, String houseParts, int price, int mztype, String houseDescribe, int houseSize, String houseLocal, String houseImgs,String detailImages, String houseLayout, String housezx, String houselc, int housecw, String housekf, int zffkfs, int mffkfs, double longitude, double latitude, int BDType, String province, String city, String county){
         logger.info("添加房屋信息");
-        if(!StringUtil.isEmpty(userID) && !StringUtil.isEmpty(houseDescribe) && !StringUtil.isEmpty(houseLocal) && houseImgs.length!=0 && !StringUtil.isEmpty(houseLayout) && !StringUtil.isEmpty(housezx) && !StringUtil.isEmpty(houselc) && !StringUtil.isEmpty(housekf) && !StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county)){
+        if(!StringUtil.isEmpty(userID) && !StringUtil.isEmpty(houseDescribe) && !StringUtil.isEmpty(houseLocal) && !StringUtil.isEmpty(houseImgs) && !StringUtil.isEmpty(houseLayout) && !StringUtil.isEmpty(housezx) && !StringUtil.isEmpty(houselc) && !StringUtil.isEmpty(housekf) && !StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county)){
             try {
+                JSONArray houseImgJsonArray = JSONArray.parseArray(detailImages);
                 //插入房屋信息
                 HouseCustom houseCustom = new HouseCustom();
                 houseCustom.setUserID(userID);
@@ -211,7 +273,7 @@ public class HouseController {
                 houseCustom.setHouseDescribe(houseDescribe);
                 houseCustom.setHouseSize(houseSize);
                 houseCustom.setHouseLocal(houseLocal);
-                houseCustom.setHouseImg(houseImgs[0]);
+                houseCustom.setHouseImg(houseImgs);
                 houseCustom.setHouseLayout(houseLayout);
                 houseCustom.setHousezx(housezx);
                 houseCustom.setHouselc(houselc);
@@ -309,9 +371,9 @@ public class HouseController {
                 housePartsService.insert(housePartsCustom);
                 //插入房屋照片
                 if(houseCustom1!=null) {
-                    for (String image : houseImgs) {
+                    for (int i = 0 ; i < houseImgJsonArray.size();i++) {
                         HouseImgCustom houseImgCustom = new HouseImgCustom();
-                        houseImgCustom.setHouseImgUrl(image);
+                        houseImgCustom.setHouseImgUrl((String)houseImgJsonArray.get(i));
                         houseImgCustom.setHouseID(houseCustom1.getHouseID());
                         houseImgService.insert(houseImgCustom);
                     }
@@ -330,6 +392,31 @@ public class HouseController {
         }else{
             logger.info("房屋信息不全");
             return  new Message("0","房屋信息不全");
+        }
+    }
+    /**
+    * @gongneng  获取当前user发布的所有房屋
+    * @auther 魏星
+    * @date   2018/7/7    9:05
+    * @param  userID
+    * @return com.yinhu.tools.Message
+    */
+    @RequestMapping(value = "myHouse")
+    public @ResponseBody Message myHouse(String userID){
+        if(!StringUtil.isEmpty(userID)){
+            try{
+                Map<Object,Object> condition = new HashMap<Object, Object>();
+                condition.put("userID",userID);
+                List<HouseCustom> houseCustomList = houseService.queryList(condition);
+                return new Message("1","获取成功",houseCustomList);
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.info("我的房子-服务器错误");
+                return new Message("0","我的房子-服务器错误");
+            }
+        }else{
+            logger.info("参数有错");
+            return new Message("0","参数有错");
         }
     }
 }

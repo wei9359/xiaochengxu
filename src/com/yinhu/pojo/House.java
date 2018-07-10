@@ -27,6 +27,15 @@ public class House {
     private String province ;
     private String city;
     private String county;
+    private int useType;
+
+    public int getUseType() {
+        return useType;
+    }
+
+    public void setUseType(int useType) {
+        this.useType = useType;
+    }
 
     public String getProvince() {
         return province;

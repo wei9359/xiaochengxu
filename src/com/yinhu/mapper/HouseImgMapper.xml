@@ -8,7 +8,7 @@
             select replace(uuid(),'-','') from dual
         </selectKey>
         insert into houseImg(houseImgID,houseImgUrl,houseImgDescribe,houseID)
-        values(#{houseImgID,jdbcType=VARCHAR},#{houseImgUrl,jdbcType=VARCHAR},#{houseImgDescribe,jdbcType=VARCHAR},${houseID,jdbcType=VARCHAR})
+        values(#{houseImgID,jdbcType=VARCHAR},#{houseImgUrl,jdbcType=VARCHAR},#{houseImgDescribe,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR})
     </insert>
     <!--通过条件查询多条数据-->
     <select id="queryList" parameterType="map" resultType="HouseImgCustom">
