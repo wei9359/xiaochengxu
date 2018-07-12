@@ -28,6 +28,24 @@ public class House {
     private String city;
     private String county;
     private int useType;
+    private int housetype;
+    private int cqxx;
+
+    public int getHousetype() {
+        return housetype;
+    }
+
+    public void setHousetype(int housetype) {
+        this.housetype = housetype;
+    }
+
+    public int getCqxx() {
+        return cqxx;
+    }
+
+    public void setCqxx(int cqxx) {
+        this.cqxx = cqxx;
+    }
 
     public int getUseType() {
         return useType;

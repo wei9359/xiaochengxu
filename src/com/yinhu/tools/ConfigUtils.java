@@ -20,6 +20,12 @@ public class ConfigUtils  {
     public static String qiniuAccessKey;
     //七牛密钥
     public static String qiniuSecretKey;
+    //容联云sid
+    public static String rlyaccountsid;
+    //容联云token
+    public static String rlyauthtoken;
+    //容联云appid
+    public static String rlyappid;
 
     static {
         try{
@@ -34,6 +40,12 @@ public class ConfigUtils  {
             qiniuAccessKey = properties.getProperty("qiniuAccessKey");
 
             qiniuSecretKey = properties.getProperty("qiniuSecretKey");
+
+            rlyaccountsid = properties.getProperty("rlyaccountsid");
+
+            rlyauthtoken = properties.getProperty("rlyauthtoken");
+
+            rlyappid = properties.getProperty("rlyappid");
 
         }catch (IOException e){
             e.printStackTrace();

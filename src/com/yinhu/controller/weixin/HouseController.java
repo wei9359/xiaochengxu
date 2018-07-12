@@ -3,7 +3,9 @@ package com.yinhu.controller.weixin;
 import com.alibaba.fastjson.JSONArray;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.yinhu.pojo.House;
 import com.yinhu.pojo.HouseParts;
+import com.yinhu.tools.Distance;
 import com.yinhu.tools.JSONTools;
 import com.yinhu.tools.Message;
 import com.yinhu.pojo.custom.*;
@@ -76,7 +78,7 @@ public class HouseController {
                 }else{
                     houseCustom.setCollectType(0);
                 }
-                UserCustom userCustom = userService.queryById(userID);
+                UserCustom userCustom = userService.queryById(houseCustom.getUserID());
                 if(userCustom!=null){
                     houseCustom.setOwnerName(userCustom.getUserName());
                     houseCustom.setOwnerPhone(userCustom.getUserPhoneNum());
@@ -184,9 +186,29 @@ public class HouseController {
     * @return com.yinhu.tools.Message
     */
     @RequestMapping(value = "getHouseListInArea")
-    public @ResponseBody Message getHouseListInArea(Double longitude,Double latitude){
-        if(longitude!=null&&latitude!=null){
-            return new Message("1","成功");
+    public @ResponseBody Message getHouseListInArea(Double longitude,Double latitude,String city,String district,Integer area){
+        if(longitude!=null&&latitude!=null&&!StringUtil.isEmpty(city)&&!StringUtil.isEmpty(district)&&area!=null){
+            try {
+                Map<Object, Object> condition = new HashMap<Object, Object>();
+                condition.put("city", city);
+                condition.put("district", district);
+                List<HouseCustom> houseCustomList = houseService.queryList(condition);
+                List<HouseCustom> houseCustomList1 = new ArrayList<HouseCustom>();
+                if(houseCustomList!=null){
+                    for(HouseCustom houseCustom:houseCustomList){
+                       Double distance =  Distance.getDistanceByZuoBiao(longitude,latitude,houseCustom.getLongitude(),houseCustom.getLatitude());
+                       if(distance<area){
+                           houseCustomList1.add(houseCustom);
+                       }
+                    }
+                    return new Message("1","成功",houseCustomList1);
+                }else{
+                    return new Message("0","当前区域没有房源");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return new Message("0","服务器错误");
+            }
         }else{
             return new Message("0","参数错误");
         }

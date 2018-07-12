@@ -6,8 +6,8 @@
         <selectKey resultType="String" keyProperty="houseID" order="BEFORE">
             select replace(uuid(),'-','') from dual
         </selectKey>
-        insert into house(userID,houseID,price,mztype,houseDescribe,houseSize,houseLocal,houseImg,houseLayout,housezx,houselc,housecw,housekf,zffkfs,mffkfs,longitude,latitude,BDType,province,city,county,useType)
-        values(#{userID,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR},#{price,jdbcType=INTEGER},#{mztype,jdbcType=TINYINT},#{houseDescribe,jdbcType=VARCHAR},#{houseSize,jdbcType=INTEGER},#{houseLocal,jdbcType=VARCHAR},#{houseImg,jdbcType=VARCHAR},#{houseLayout,jdbcType=VARCHAR},#{housezx,jdbcType=VARCHAR},#{houselc,jdbcType=VARCHAR},#{housecw,jdbcType=TINYINT},#{housekf,jdbcType=VARCHAR},#{zffkfs,jdbcType=TINYINT},#{mffkfs,jdbcType=TINYINT},#{longitude,jdbcType=DOUBLE},#{latitude,jdbcType=DOUBLE},#{BDType,jdbcType=TINYINT},#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{county,jdbcType=VARCHAR},#{useType,jdbcType=TINYINT})
+        insert into house(userID,houseID,price,mztype,houseDescribe,houseSize,houseLocal,houseImg,houseLayout,housezx,houselc,housecw,housekf,zffkfs,mffkfs,longitude,latitude,BDType,province,city,county,useType,housetype,cqxx)
+        values(#{userID,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR},#{price,jdbcType=INTEGER},#{mztype,jdbcType=TINYINT},#{houseDescribe,jdbcType=VARCHAR},#{houseSize,jdbcType=INTEGER},#{houseLocal,jdbcType=VARCHAR},#{houseImg,jdbcType=VARCHAR},#{houseLayout,jdbcType=VARCHAR},#{housezx,jdbcType=VARCHAR},#{houselc,jdbcType=VARCHAR},#{housecw,jdbcType=TINYINT},#{housekf,jdbcType=VARCHAR},#{zffkfs,jdbcType=TINYINT},#{mffkfs,jdbcType=TINYINT},#{longitude,jdbcType=DOUBLE},#{latitude,jdbcType=DOUBLE},#{BDType,jdbcType=TINYINT},#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{county,jdbcType=VARCHAR},#{useType,jdbcType=TINYINT},#{housetype,jdbcType=TINYINT},#{cqxx,jdbcType=TINYINT})
     </insert>
     <!--根据条件查询多条数据-->
     <select id="queryList" resultType="HouseCustom" parameterType="map">
@@ -136,6 +136,12 @@
             <if test ="useType!=null">
                 useType = #{useType,jdbcType=TINYINT},
             </if>
+            <if test="housetype!=null">
+                housetype = #{housetype,jdbcType=TINYINT},
+            </if>
+            <if test="cqxx!=null">
+                cqxx = #{cqxx,jdbcType=TINYINT},
+            </if>
         </set>
         where houseID = #{houseID,jdbcType=VARCHAR}
     </update>
@@ -163,7 +169,9 @@
             province = #{province,jdbcType=VARCHAR},
             city = #{city,jdbcType=VARCHAR},
             county = #{county,jdbcType=VARCHAR},
-            useType = #{useType,jdbcType=TINYINT}
+            useType = #{useType,jdbcType=TINYINT},
+            housetype = #{housetype,jdbcType=TINYINT},
+            cqxx = #{cqxx,jdbcType=TINYINT}
         </set>
         where houseID=#{houseID,jdbcType=VARCHAR}
     </update>
@@ -222,6 +230,12 @@
         </if>
         <if test="useType!=null">
             and useType like CONCAT('%','${useType}','%')
+        </if>
+        <if test="housetype!=null">
+            and housetype like CONCAT('%','${housetype}','%')
+        </if>
+        <if test="cqxx!=null">
+            and cqxx like CONCAT('%','${cqxx}','%')
         </if>
     </sql>
     <!--精确条件-->
@@ -282,6 +296,12 @@
         </if>
         <if test="useType!=null">
             and useType = #{useType,jdbcType=TINYINT}
+        </if>
+        <if test="housetype!=null">
+            and housetype = #{housetype,jdbcType=TINYINT}
+        </if>
+        <if test="cqxx!=null">
+            and cqxx = #{cqxx,jdbcType=TINYINT}
         </if>
     </sql>
 </mapper>
