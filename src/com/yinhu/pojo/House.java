@@ -30,6 +30,53 @@ public class House {
     private int useType;
     private int housetype;
     private int cqxx;
+    private int isTop;
+    private int topday;
+    private String topTime;
+    private String createDate;
+    private String updateDate;
+
+
+
+    public int getIsTop() {
+        return isTop;
+    }
+
+    public void setIsTop(int isTop) {
+        this.isTop = isTop;
+    }
+
+    public int getTopday() {
+        return topday;
+    }
+
+    public void setTopday(int topday) {
+        this.topday = topday;
+    }
+
+    public String getTopTime() {
+        return topTime;
+    }
+
+    public void setTopTime(String topTime) {
+        this.topTime = topTime;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
 
     public int getHousetype() {
         return housetype;

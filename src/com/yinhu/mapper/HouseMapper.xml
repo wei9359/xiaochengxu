@@ -6,8 +6,8 @@
         <selectKey resultType="String" keyProperty="houseID" order="BEFORE">
             select replace(uuid(),'-','') from dual
         </selectKey>
-        insert into house(userID,houseID,price,mztype,houseDescribe,houseSize,houseLocal,houseImg,houseLayout,housezx,houselc,housecw,housekf,zffkfs,mffkfs,longitude,latitude,BDType,province,city,county,useType,housetype,cqxx)
-        values(#{userID,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR},#{price,jdbcType=INTEGER},#{mztype,jdbcType=TINYINT},#{houseDescribe,jdbcType=VARCHAR},#{houseSize,jdbcType=INTEGER},#{houseLocal,jdbcType=VARCHAR},#{houseImg,jdbcType=VARCHAR},#{houseLayout,jdbcType=VARCHAR},#{housezx,jdbcType=VARCHAR},#{houselc,jdbcType=VARCHAR},#{housecw,jdbcType=TINYINT},#{housekf,jdbcType=VARCHAR},#{zffkfs,jdbcType=TINYINT},#{mffkfs,jdbcType=TINYINT},#{longitude,jdbcType=DOUBLE},#{latitude,jdbcType=DOUBLE},#{BDType,jdbcType=TINYINT},#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{county,jdbcType=VARCHAR},#{useType,jdbcType=TINYINT},#{housetype,jdbcType=TINYINT},#{cqxx,jdbcType=TINYINT})
+        insert into house(userID,houseID,price,mztype,houseDescribe,houseSize,houseLocal,houseImg,houseLayout,housezx,houselc,housecw,housekf,zffkfs,mffkfs,longitude,latitude,BDType,province,city,county,useType,housetype,cqxx,isTop,topday,topTime,createDate,updateDate)
+        values(#{userID,jdbcType=VARCHAR},#{houseID,jdbcType=VARCHAR},#{price,jdbcType=INTEGER},#{mztype,jdbcType=TINYINT},#{houseDescribe,jdbcType=VARCHAR},#{houseSize,jdbcType=INTEGER},#{houseLocal,jdbcType=VARCHAR},#{houseImg,jdbcType=VARCHAR},#{houseLayout,jdbcType=VARCHAR},#{housezx,jdbcType=VARCHAR},#{houselc,jdbcType=VARCHAR},#{housecw,jdbcType=TINYINT},#{housekf,jdbcType=VARCHAR},#{zffkfs,jdbcType=TINYINT},#{mffkfs,jdbcType=TINYINT},#{longitude,jdbcType=DOUBLE},#{latitude,jdbcType=DOUBLE},#{BDType,jdbcType=TINYINT},#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{county,jdbcType=VARCHAR},#{useType,jdbcType=TINYINT},#{housetype,jdbcType=TINYINT},#{cqxx,jdbcType=TINYINT},#{isTop,jdbcType=TINYINT},#{topday,jdbcType=INTEGER},#{topTime,jdbcType=VARCHAR},#{createDate,jdbcType=VARCHAR},#{updateDate,jdbcType=VARCHAR})
     </insert>
     <!--根据条件查询多条数据-->
     <select id="queryList" resultType="HouseCustom" parameterType="map">
@@ -142,6 +142,21 @@
             <if test="cqxx!=null">
                 cqxx = #{cqxx,jdbcType=TINYINT},
             </if>
+            <if test="isTop!=null">
+                isTop = #{isTop,jdbcType=TINYINT},
+            </if>
+            <if test="topday!=null">
+                topday = #{topday,jdbcType=INTEGER},
+            </if>
+            <if test="topTime!=null">
+                topTime = #{topTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate!=null">
+                createDate = #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate!=null">
+                updateDate = #{updateDate,jdbcType=VARCHAR},
+            </if>
         </set>
         where houseID = #{houseID,jdbcType=VARCHAR}
     </update>
@@ -171,7 +186,12 @@
             county = #{county,jdbcType=VARCHAR},
             useType = #{useType,jdbcType=TINYINT},
             housetype = #{housetype,jdbcType=TINYINT},
-            cqxx = #{cqxx,jdbcType=TINYINT}
+            cqxx = #{cqxx,jdbcType=TINYINT},
+            isTop = #{isTop,jdbcType=TINYINT},
+            topday = #{topday,jdbcType=INTEGER},
+            topTime = #{topTime,jdbcType=VARCHAR},
+            createDate = #{createDate,jdbcType=VARCHAR},
+            updateDate = #{updateDate,jdbcType=VARCHAR}
         </set>
         where houseID=#{houseID,jdbcType=VARCHAR}
     </update>
@@ -237,6 +257,21 @@
         <if test="cqxx!=null">
             and cqxx like CONCAT('%','${cqxx}','%')
         </if>
+        <if test="isTop!=null">
+            and isTop like CONCAT('%','${isTop}','%')
+        </if>
+        <if test="topday!=null">
+            and topday like CONCAT('%','${topday}','%')
+        </if>
+        <if test="topTime!=null">
+            and topTime like CONCAT('%','${topTime}','%')
+        </if>
+        <if test="createDate!=null">
+            and createDate like CONCAT('%','${createDate}','%')
+        </if>
+        <if test="updateDate!=null">
+            and updateDate like CONCAT('%','${updateDate}','%')
+        </if>
     </sql>
     <!--精确条件-->
     <sql id="condition">
@@ -246,8 +281,11 @@
         <if test="userID!=null">
             and userID = #{userID,jdbcType=VARCHAR}
         </if>
-        <if test="price!=null">
-            and price = #{price,jdbcType=INTEGER}
+        <if test="price1!=null">
+            and price &gt;= #{price1,jdbcType=INTEGER}
+        </if>
+        <if test="price2!=null">
+            and price &lt;= #{price2,jdbcType=INTEGER}
         </if>
         <if test="mztype!=null">
             and mztype = #{mztype,jdbcType=TINYINT}
@@ -302,6 +340,21 @@
         </if>
         <if test="cqxx!=null">
             and cqxx = #{cqxx,jdbcType=TINYINT}
+        </if>
+        <if test="isTop!=null">
+            and isTop = #{isTop,jdbcType=TINYINT}
+        </if>
+        <if test="topday!=null">
+            and topday = #{topday,jdbcType=INTEGER}
+        </if>
+        <if test="topTime!=null">
+            and topTime = #{topTime,jdbcType=VARCHAR}
+        </if>
+        <if test="createDate!=null">
+            and createDate = #{createDate,jdbcType=VARCHAR}
+        </if>
+        <if test="updateDate!=null">
+            and updateDate = #{updateDate,jdbcType = VARCHAR}
         </if>
     </sql>
 </mapper>

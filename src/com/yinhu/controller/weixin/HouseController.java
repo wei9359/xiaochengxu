@@ -5,18 +5,17 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.yinhu.pojo.House;
 import com.yinhu.pojo.HouseParts;
-import com.yinhu.tools.Distance;
-import com.yinhu.tools.JSONTools;
-import com.yinhu.tools.Message;
+import com.yinhu.tools.*;
 import com.yinhu.pojo.custom.*;
 import com.yinhu.service.*;
-import com.yinhu.tools.StringUtil;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -128,13 +127,65 @@ public class HouseController {
      */
     //首页展示房屋信息
     @RequestMapping(value = "getHouseIfo")
-    public @ResponseBody Message getHouseIfo() throws Exception{
-        Map<Object,Object> condition = new HashMap<Object, Object>();
-        List<HouseCustom> houseCustomList = houseService.queryList(condition);
-        if(houseCustomList!=null){
-            return new Message("1","访问成功",houseCustomList);
-        }else {
-            return new Message("0", "获取失败");
+    public @ResponseBody Message getHouseIfo(String province,String city,String county) throws Exception{
+        if(!StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county)) {
+            try {
+                Map<Object, Object> condition = new HashMap<Object, Object>();
+                condition.put("province",province);
+                condition.put("city",city);
+                condition.put("county",county);
+                condition.put("useType",1);
+                condition.put("isTop",1);
+                List<HouseCustom> houseCustomList = houseService.queryList(condition);
+                List<HouseCustom> houseCustomList1 = new ArrayList<HouseCustom>();
+                long time;
+                Date date = new Date();
+                SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                for(HouseCustom houseCustom:houseCustomList){
+                    time = s.parse(houseCustom.getTopTime()).getTime();
+                    if (date.getTime() - time >= houseCustom.getTopday() * 24 * 60 * 60 * 1000) {
+                        houseCustom.setIsTop((byte) 0);
+                        houseService.update(houseCustom);
+                    }else{
+                        houseCustomList1.add(houseCustom);
+                    }
+                }
+                if (houseCustomList != null) {
+                    return new Message("1", "访问成功", houseCustomList1);
+                } else {
+                    return new Message("0", "获取失败");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return new Message("0","首页房屋信息获取-服务器错误");
+            }
+        }else{
+            return new Message("0","参数错误");
+        }
+    }
+
+    @RequestMapping(value = "getHouseByMzType")
+    public @ResponseBody Message getHouseByMzType(String province,String city,String county,Integer mzType){
+        if(!StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county) && mzType!=null) {
+            try {
+                Map<Object, Object> condition = new HashMap<Object, Object>();
+                condition.put("province",province);
+                condition.put("city",city);
+                condition.put("county",county);
+                condition.put("useType",1);
+                condition.put("mztype",mzType);
+                List<HouseCustom> houseCustomList = houseService.queryList(condition);
+                if (houseCustomList != null) {
+                    return new Message("1", "访问成功", houseCustomList);
+                } else {
+                    return new Message("0", "获取失败");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return new Message("0","首页房屋信息获取-服务器错误");
+            }
+        }else{
+            return new Message("0","参数错误");
         }
     }
     /**
@@ -148,21 +199,86 @@ public class HouseController {
     * @return com.yinhu.tools.Message
     */
     @RequestMapping(value = "getHouseIfoByCondition")
-    public @ResponseBody Message getHouseIfoByCondition(Integer mztype,String houseLayout,String housekf,String housezx){
+        public @ResponseBody Message getHouseIfoByCondition(Integer mztype,String houseLayout,String housekf,Integer housecw,Integer zffkfs,Integer houseType,Integer ZFPrice,Integer cqxx){
         try {
             Map<Object, Object> condition = new HashMap<Object, Object>();
             if (mztype != null) {
                 condition.put("mztype", mztype);
+                if(mztype == 2){
+                    if(zffkfs!=null&&zffkfs!=0) {
+                        condition.put("mffkfs", zffkfs-1);
+                    }
+                    if(ZFPrice !=null && ZFPrice != 0) {
+                      if(ZFPrice == 1){
+                          condition.put("price1",0);
+                          condition.put("price2",200000);
+                      }else if(ZFPrice == 2){
+                          condition.put("price1",200000);
+                          condition.put("price2",400000);
+                      }else if(ZFPrice == 3){
+                          condition.put("price1",400000);
+                          condition.put("price2",1000000);
+                      }else{
+                          condition.put("price1",1000000);
+                      }
+                    }
+                }else if(mztype == 1){
+                    if(zffkfs!=null&&zffkfs!=0) {
+                        condition.put("zffkfs", zffkfs - 1);
+                    }
+                    if(ZFPrice !=null && ZFPrice != 0){
+                        if(ZFPrice==1){
+                            condition.put("price1",0);
+                            condition.put("price2",500);
+                        }else if(ZFPrice==2){
+                            condition.put("price1",500);
+                            condition.put("price2",1000);
+                        }else if(ZFPrice==3){
+                            condition.put("price1",1000);
+                            condition.put("price2",2000);
+                        }else{
+                            condition.put("price1",2000);
+                        }
+                    }
+                }else if(mztype == 0){
+                    if(zffkfs!=null&&zffkfs!=0) {
+                        condition.put("zffkfs", zffkfs - 1);
+                    }
+                    if(ZFPrice !=null && ZFPrice != 0){
+                        if(ZFPrice==1){
+                            condition.put("price1",0);
+                            condition.put("price2",10000);
+                        }else if(ZFPrice==2){
+                            condition.put("price1",10000);
+                            condition.put("price2",20000);
+                        }else if(ZFPrice==3){
+                            condition.put("price1",20000);
+                            condition.put("price2",50000);
+                        }else if(ZFPrice==4){
+                            condition.put("price1",50000);
+                            condition.put("price2",100000);
+                        }else{
+                            condition.put("price1",100000);
+                        }
+                    }
+                }
+
             }
             System.out.println(!StringUtil.isEmpty(houseLayout));
-            if (!StringUtil.isEmpty(houseLayout)) {
+            if (!StringUtil.isEmpty(houseLayout)&&!houseLayout.equals("全部")) {
                 condition.put("houseLayout", houseLayout);
             }
-            if (!StringUtil.isEmpty(housekf)) {
+            if (!StringUtil.isEmpty(housekf)&&!housekf.equals("全部")) {
                 condition.put("housekf", housekf);
             }
-            if (!StringUtil.isEmpty(housezx)) {
-                condition.put("housezx", housezx);
+//            if (!StringUtil.isEmpty(housezx)) {
+//                condition.put("housezx", housezx);
+//            }
+            if(housecw!=null&&housecw!=0){
+                condition.put("housecw",housecw-1);
+            }
+            if(houseType!=null&&houseType!=0){
+                condition.put("housetype",houseType-1);
             }
            List<HouseCustom> houseCustomList = houseService.queryList(condition);
             if(houseCustomList!=null && houseCustomList.size()!=0){
@@ -186,12 +302,36 @@ public class HouseController {
     * @return com.yinhu.tools.Message
     */
     @RequestMapping(value = "getHouseListInArea")
-    public @ResponseBody Message getHouseListInArea(Double longitude,Double latitude,String city,String district,Integer area){
-        if(longitude!=null&&latitude!=null&&!StringUtil.isEmpty(city)&&!StringUtil.isEmpty(district)&&area!=null){
+    public @ResponseBody Message getHouseListInArea(Double longitude,Double latitude,String city,String district,Integer area,Integer mztype,String houseLayout,String housekf,Integer housecw,Integer zffkfs,Integer housetype,Integer cqxx){
+        if(longitude!=null&&latitude!=null&&!StringUtil.isEmpty(city)&&!StringUtil.isEmpty(district)&&area!=null&&mztype!=null){
             try {
                 Map<Object, Object> condition = new HashMap<Object, Object>();
                 condition.put("city", city);
                 condition.put("district", district);
+                condition.put("mztype",mztype);
+                System.out.println(!houseLayout.equals("全部"));
+                if(!StringUtil.isEmpty(houseLayout)&&!houseLayout.equals("全部")) {
+                    condition.put("houseLayout", houseLayout);
+                }
+                if(!StringUtil.isEmpty(housekf)&&!housekf.equals("全部")) {
+                    condition.put("housekf",housekf);
+                }
+                if(housecw!=null&&housecw!=0){
+                    condition.put("housecw",housecw-1);
+                }
+                if(zffkfs!=null&&zffkfs!=0){
+                    if(mztype==2){
+                        condition.put("mffkfs",zffkfs-1);
+                    }else{
+                        condition.put("zffkfs",zffkfs-1);
+                    }
+                }
+                if(housetype!=null&&housetype!=0){
+                    condition.put("housetype",housetype-1);
+                }
+                if(cqxx!=null&&cqxx!=0){
+                    condition.put("cqxx",cqxx);
+                }
                 List<HouseCustom> houseCustomList = houseService.queryList(condition);
                 List<HouseCustom> houseCustomList1 = new ArrayList<HouseCustom>();
                 if(houseCustomList!=null){
@@ -439,6 +579,62 @@ public class HouseController {
         }else{
             logger.info("参数有错");
             return new Message("0","参数有错");
+        }
+    }
+    /**
+    * @gongneng   房屋下架
+    * @auther 魏星
+    * @date   2018/7/15    14:33
+    * @param  houseID
+    * @return com.yinhu.tools.Message
+    */
+    @RequestMapping(value = "closeHouse")
+    public @ResponseBody Message closeHouse(String houseID){
+        if(!StringUtil.isEmpty(houseID)){
+            try {
+                HouseCustom houseCustom = houseService.queryById(houseID);
+                if(houseCustom!=null) {
+                    houseCustom.setUseType(0);
+                    houseCustom.setCreateDate(TimeHelp.getCurrentTimeZhi());
+                    houseService.update(houseCustom);
+                    return new Message("1", "房屋下架成功");
+                }else{
+                    return new Message("0","参数错误");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return new Message("0","房屋下架-服务器错误");
+            }
+        }else{
+            return new Message("0","参数错误");
+        }
+    }
+    /**
+    * @gongneng   房屋上架
+    * @auther 魏星
+    * @date   2018/7/15    14:37
+    * @param  houseID
+    * @return com.yinhu.tools.Message
+    */
+    @RequestMapping(value = "openHouse")
+    public @ResponseBody Message openHouse(String houseID){
+        if(!StringUtil.isEmpty(houseID)){
+            try {
+                HouseCustom houseCustom = houseService.queryById(houseID);
+                if(houseCustom!=null) {
+                    houseCustom.setUseType(1);
+                    houseCustom.setCreateDate(TimeHelp.getCurrentTimeZhi());
+                    houseService.update(houseCustom);
+                    return new Message("1", "房屋上架成功");
+                }else{
+                    return new Message("0","参数错误");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return new Message("0","房屋上架-服务器错误");
+            }
+        }else{
+            return new Message("0","参数错误");
         }
     }
 }
