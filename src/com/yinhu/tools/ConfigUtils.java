@@ -26,7 +26,20 @@ public class ConfigUtils  {
     public static String rlyauthtoken;
     //容联云appid
     public static String rlyappid;
-
+    //容联云server
+    public static String rlyServiceIp;
+    //容联云port
+    public static String rlyServicePort;
+    //阿里云keyid
+    public static String alydxAccessKeyID;
+    //阿里云keySecret
+    public static String alydxAccessKeySecret;
+    //分页的大小
+    public static int pageSize = 5;
+    //降序排序
+    public static String DESC = "desc";
+    //升序排序
+    public static String ASC = "asc";
     static {
         try{
             properties.load(ConfigUtils.class.getClassLoader().getResourceAsStream("config.properties"));
@@ -46,6 +59,14 @@ public class ConfigUtils  {
             rlyauthtoken = properties.getProperty("rlyauthtoken");
 
             rlyappid = properties.getProperty("rlyappid");
+
+            rlyServicePort = properties.getProperty("rlyServicePort");
+
+            rlyServiceIp = properties.getProperty("rlyServiceIp");
+
+            alydxAccessKeyID  = properties.getProperty("alydxAccessKeyID");
+
+            alydxAccessKeySecret = properties.getProperty("alydxAccessKeySecret");
 
         }catch (IOException e){
             e.printStackTrace();

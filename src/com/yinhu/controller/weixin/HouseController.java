@@ -165,8 +165,8 @@ public class HouseController {
     }
 
     @RequestMapping(value = "getHouseByMzType")
-    public @ResponseBody Message getHouseByMzType(String province,String city,String county,Integer mzType){
-        if(!StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county) && mzType!=null) {
+    public @ResponseBody Message getHouseByMzType(String province,String city,String county,Integer mzType,Integer beginRow){
+        if(!StringUtil.isEmpty(province) && !StringUtil.isEmpty(city) && !StringUtil.isEmpty(county) && mzType!=null&&beginRow!=null) {
             try {
                 Map<Object, Object> condition = new HashMap<Object, Object>();
                 condition.put("province",province);
@@ -174,9 +174,10 @@ public class HouseController {
                 condition.put("county",county);
                 condition.put("useType",1);
                 condition.put("mztype",mzType);
-                List<HouseCustom> houseCustomList = houseService.queryList(condition);
-                if (houseCustomList != null) {
-                    return new Message("1", "访问成功", houseCustomList);
+                //List<HouseCustom> houseCustomList = houseService.queryList(condition);
+                Pager<HouseCustom> pager = houseService.queryPager(condition,beginRow,ConfigUtils.pageSize,"createDate",ConfigUtils.DESC,null);
+                if (pager != null) {
+                    return new Message("1", "访问成功", pager);
                 } else {
                     return new Message("0", "获取失败");
                 }

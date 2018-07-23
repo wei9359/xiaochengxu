@@ -1,12 +1,16 @@
 package com.yinhu.controller.weixin;
 
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.yinhu.tools.Message;
 import com.yinhu.pojo.custom.UserCustom;
 import com.yinhu.service.HouseCollectService;
 import com.yinhu.service.HouseService;
 import com.yinhu.service.UserService;
 import com.yinhu.tools.MD5;
+import com.yinhu.tools.MyRandom;
 import com.yinhu.tools.StringUtil;
+import com.yinhu.tools.sms.AlySendSMS;
+import com.yinhu.tools.sms.SendSMS;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -159,9 +163,23 @@ public class UserController {
      * @return Message
      */
     @RequestMapping(value = "getIdentifyCode")
-    public @ResponseBody Message getIdentifyCode(String userPhoneNum, String type, HttpSession session){
-        String identifyCode = "1234";
-        return new Message("1","获取成功",identifyCode);
+    public @ResponseBody Message getIdentifyCode(String userPhoneNum, HttpSession session){
+        if(!StringUtil.isEmpty(userPhoneNum)) {
+            String identifyCode = MyRandom.getRandomString(6);
+            try {
+                SendSmsResponse ssr = AlySendSMS.sendSms("15374909359", "魏星", "SMS_139981127", new String[]{identifyCode});
+                if (ssr.getCode() == "OK") {
+                    return new Message("1", "发送验证码成功", identifyCode);
+                } else {
+                    return new Message("0", ssr.getMessage());
+                }
+            } catch (Exception e) {
+                logger.info("发送验证码--服务器错误");
+                return new Message("0", "发送验证码--服务器错误");
+            }
+        }else{
+            return new Message("0","参数错误");
+        }
     }
 
     @RequestMapping(value = "updateUserIfo")
